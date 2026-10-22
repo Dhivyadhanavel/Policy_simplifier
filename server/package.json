@@ -1,0 +1,36 @@
+﻿{
+  "name": "lexiclear-server",
+  "version": "1.0.0",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node --tls-min-v1.2 src/server.js",
+    "dev": "nodemon --exec \"node --tls-min-v1.2 src/server.js\"",
+    "test": "jest --testEnvironment node --forceExit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.29.1",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "diff": "^9.0.0",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mammoth": "^1.13.0",
+    "mongoose": "^9.11.2",
+    "multer": "^2.4.0",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.20.2",
+    "tesseract.js": "^7.0.0",
+    "uuid": "^14.0.3"
+  },
+  "devDependencies": {
+    "fast-check": "^4.10.2",
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.1"
+  }
+}
