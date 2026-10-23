@@ -1,5 +1,6 @@
 ﻿// server/src/services/documentService.js
 'use strict';
+console.log('[DocumentService] v2.0 loaded - classification active');
 
 const path = require('path');
 const fs = require('fs');

@@ -11,22 +11,34 @@ const handleValidation = (req) => {
 };
 
 const uploadDocument = async (req, res, next) => {
+  console.log('[Upload] Starting upload for file:', req.file ? req.file.originalname : 'NO FILE');
   try {
     if (!req.file) throw new UnsupportedMediaTypeError('No file provided in the request');
-    const doc = await documentService.upload(req.file, req.user.userId);
 
-    // Run extraction synchronously so we can return rejection errors immediately
+    // Step 1: Save file to disk + create DB record
+    const doc = await documentService.upload(req.file, req.user.userId);
+    console.log('[Upload] File saved, doc ID:', doc._id);
+
+    // Step 2: Extract text + classify — runs synchronously so rejection returns error
     try {
+      console.log('[Upload] Starting extraction + classification...');
       await documentService.extract(doc._id);
-      // Re-fetch to get updated status and documentType
+      console.log('[Upload] Extraction + classification PASSED');
+
       const updated = await documentService.getById(doc._id, req.user.userId, false);
-      res.status(201).json({ message: 'Document uploaded and processed successfully', document: updated });
+      return res.status(201).json({ message: 'Document uploaded and processed successfully', document: updated });
+
     } catch (extractErr) {
-      // If it's a validation error (wrong doc type), pass to error handler
-      // The document record is already deleted inside extract() for rejections
+      console.log('[Upload] Extraction/classification FAILED:', extractErr.message);
+      console.log('[Upload] Error statusCode:', extractErr.statusCode);
+      console.log('[Upload] Error isOperational:', extractErr.isOperational);
       return next(extractErr);
     }
-  } catch (err) { next(err); }
+
+  } catch (err) {
+    console.log('[Upload] Outer catch error:', err.message);
+    next(err);
+  }
 };
 
 const listDocuments = async (req, res, next) => {
@@ -60,4 +72,3 @@ const deleteDocument = async (req, res, next) => {
 };
 
 module.exports = { uploadDocument, listDocuments, getDocument, getDocumentText, deleteDocument };
-
